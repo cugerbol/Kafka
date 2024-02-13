@@ -8,15 +8,18 @@
 * В четвертом разделе **Set host** инструкция настройки видимости узлов кластера
 * В пятом разделе **Kafka start** запускаем кафку
 * В шестом разделе **Commands for kafka** приведены примеры основных команд для работы с kafka
-* В 7 разделе **Python testing** продемонстрированы примеры работы с kafka с помощью python
+* В седьмом разделе **Python testing** продемонстрированы примеры работы с kafka с помощью python
 
 В ниже приведенных скриптах, происходит настройка узла **kafka-producer-1** . При установке других узлов, заменить необходимые значения.
 
 ### Node names
-Список имен хостов кластера:
+Список имен хостов кластеров:
+#### Producer cluster
 - kafka-producer-1
 - kafka-producer-2
 - kafka-producer-3
+
+#### Consumer cluster
 - kafka-consumer-1
 - kafka-consumer-2
 - kafka-consumer-3
@@ -34,14 +37,21 @@
     ![](images/passwd.1.png)
     ![](images/passwd.2.png)
 
-3. Переключаемся на пользователя Kafka и возвращаемся в его домашнюю директорию
+3. Переключаемся на пользователя Kafka и перемещаемся в его домашнюю директорию
     - su kafka 
     - cd
 
 ### 2. Preporation
-
 1. Задаем имя хоста
     - sudo hostnamectl set hostname kafka-producer-1
+  
+### 3. Dowload git repository
+1. Скачиваем текущий репозиторий в домашнюю директорию
+    git clone https://github.com/cugerbol/Kafka.git
+2. Перемещаем все файлы из скачанного репозитория в домашню директорию
+   - cd Kafka
+   - mv * ../
+   - cd 
 
 ## 2. Setup node step by step
 ### 1. Install kafka
