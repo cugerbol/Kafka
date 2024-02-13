@@ -51,7 +51,8 @@
 2. Перемещаем все файлы из скачанного репозитория в домашню директорию
    - cd Kafka
    - mv * ../
-   - cd 
+   - cd
+   - rm -rf Kafka
 
 ## 2. Setup node step by step
 ### 1. Install kafka
