@@ -198,10 +198,19 @@ Cоздание топика
 
 
 ## 7. Python testing
-
+Данный пункт реализуем на 1 ноде кластера Producer и на 1 ноде кластера Consumer
 1. Создаем новое виртуальное окружение
     - python3 -m venv venv
 2. Активируем его
     - source venv/bin/activate
 3. Устанавливаем необходимые библиотеки
     - pip install -r requirements.txt
+4. Переходим в директорию test в файлах kafka-consumer.py и в kafka-producer.py устанавливаем свои значения хостов
+5. Запускаем kafka-producer.py на одном из узлов кластера Producer
+   - python3 kafka-producer.py
+6. Запускаем на всех узлах кластера Consumer скрипт kafka-consumer.py
+   - python3 kafka-consumer.py
+
+Скрипт kafka-producer.py генерирует сообщения с цифрами от 0 до бесконечно и отправляет их в кластер Producer. Эти сообщения распределяются между брокерами и все узлы кластера Consumer получают эти сообщения.
+
+
