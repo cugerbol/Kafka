@@ -82,7 +82,7 @@
     - mkdir -p /tmp/zookeeper
 
 3. Записываем broker_id в файл myid. Так как у нас 3 нодный кластер, то broker_id принимает значения 1,2,3 
-    - "1" > /tmp/zookeeper/myid
+    - echo "1" > /tmp/zookeeper/myid
 
 ### 3. Set configs fo kafka
 
@@ -92,25 +92,24 @@
     - transaction.state.log.replication.factor=3
     - zookeeper.connect=172.25.42.11:2181,172.25.42.12:2181,172.25.42.13:2181
     - dirs=/tmp/kafka-logs-1
+    - delete.topic.enable = true
 
 ### 4. Create zookeeper.service file
 Настраиваем сервисную службу для zoookeeper. Как и в других пунктах, приведен пример для 1 узла кластера Producer. При установке на других узлов, скорректировать путь в **[Service]**
 1. Создаем файл **/etc/systemd/system/zookeeper.service**
 2. Вносим в файл следующий текст:
 
-[Unit]
-Requires=network.target\
-remote-fs.target
-After=network.target\
-remote-fs.target
+[Unit]\
+Requires=network.target remote-fs.target\
+After=network.target remote-fs.target
 
-[Service]
-Type=simple
-User=kafka
-ExecStart=/bin/sh -c "home/kafka/kafka_server_1/bin/zookeeper-server-start.sh home/kafka/kafka_server_1/config/zookeeper.properties"
-ExecStop=home/kafka/kafka_server_1/bin/zookeeper-server-stop.sh
+[Service]\
+Type=simple\
+User=kafka\
+ExecStart=/bin/sh -c "/home/kafka/kafka_server_1/bin/zookeeper-server-start.sh /home/kafka/kafka_server_1/config/zookeeper.properties"\
+ExecStop=/home/kafka/kafka_server_1/bin/zookeeper-server-stop.sh
 
-[Install]
+[Install]\
 WantedBy=multi-user.target
 
 ### 5. Create kafka.service file
@@ -118,19 +117,20 @@ WantedBy=multi-user.target
 1. Создаем файл /etc/systemd/system/kafka.service
 2. Вносим в файл следующий текст:
 
-[Unit]
+[Unit]\
 Requires=zookeeper.service\
 After=zookeeper.service
 
-[Service]
+[Service]\
 Type=simple\
 User=kafka\
-ExecStart=/bin/sh -c "home/kafka/kafka_server_1/bin/kafka-server-start.sh home/kafka/kafka_server_1/config/server.properties > home/kafka/kafka_server_1/kafka.log 2>&1"\
-ExecStop=home/kafka/kafka_server_1/bin/kafka-server-stop.sh\
+ExecStart=/bin/sh -c "/home/kafka/kafka_server_1/bin/kafka-server-start.sh /home/kafka/kafka_server_1/config/server.properties > /home/kafka/kafka_server_1/kafka.log 2>&1"\
+ExecStop=/home/kafka/kafka_server_1/bin/kafka-server-stop.sh\
 Restart=on-abnormal
 
-[Install]
+[Install]\
 WantedBy=multi-user.target
+
 
 ### 6. Distribution of rights
 
