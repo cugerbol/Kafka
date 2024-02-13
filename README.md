@@ -47,7 +47,7 @@
   
 ### 3. Dowload git repository
 1. Скачиваем текущий репозиторий в домашнюю директорию
-    git clone https://github.com/cugerbol/Kafka.git
+    - git clone https://github.com/cugerbol/Kafka.git
 2. Перемещаем все файлы из скачанного репозитория в домашню директорию
    - cd Kafka
    - mv * ../
