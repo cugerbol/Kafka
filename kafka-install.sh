@@ -5,12 +5,14 @@
 #######################################################################
 
 USER='kafka'
-HOST1='172.25.42.11'
-HOST2='172.25.42.12'
-HOST3='172.25.42.13'
+HOST1='172.25.42.21'
+HOST2='172.25.42.22'
+HOST3='172.25.42.23'
 
 ID=$(hostname | awk -F'-' '{print $NF}')
 DIR="kafka_server_$ID"
+
+
 
 #######################################################################
 ###################### Download and prepocessing ######################
@@ -21,6 +23,7 @@ systemctl disable zookeeper
 rm -rf /etc/systemd/system/zookeeper.service
 rm -rf /var/zookeeper
 rm -rf /tmp/zookeeper
+rm -rf /tmp/kafka*
 
 # Download Kafka
 wget https://downloads.apache.org/kafka/3.6.1/kafka_2.12-3.6.1.tgz
@@ -32,7 +35,7 @@ tar -xvzf kafka_2.12-3.6.1.tgz
 rm -rf kafka_2.12-3.6.1.tgz
 
 # Create directory for kafka_server
-rm kafka.log
+rm -f kafka.log
 rm -rf $DIR
 mkdir $DIR
 
@@ -41,7 +44,7 @@ mv kafka_2.12-3.6.1/* $DIR/
 rm -rf kafka_2.12-3.6.1
 
 #######################################################################
-################# set configs for zookeeper ###########################
+############# Set configs in zookeeper..properties ####################
 #######################################################################
 
 FILE="$PWD/$DIR/config/zookeeper.properties"
@@ -67,7 +70,7 @@ FILE=$DIR/config/server.properties
 sed -i "s/broker\.id=0/broker.id=${ID}/" $FILE
 sed -i "s/offsets\.topic\.replication\.factor=1/offsets.topic.replication.factor=3/" $FILE
 sed -i "s/transaction\.state\.log\.replication\.factor=1/transaction.state.log.replication.factor=3/" $FILE
-sed -i "s/zookeeper\.connect=localhost:2181/zookeeper.connect=${HOST1}:2181, ${HOST2}:2181, ${HOST3}:2181/" $FILE
+sed -i "s/zookeeper\.connect=localhost:2181/zookeeper.connect=${HOST1}:2181,${HOST2}:2181,${HOST3}:2181/" $FILE
 sed -i "s/log\.dirs=\/tmp\/kafka-logs/log.dirs=\/tmp\/kafka-logs-${ID}/" $FILE
 
 echo "INFO: Set configs for Kafka"
@@ -83,7 +86,7 @@ After=network.target remote-fs.target
 
 [Service]
 Type=simple
-User=kafka
+User=$USER
 ExecStart=/bin/sh -c "$PWD/$DIR/bin/zookeeper-server-start.sh $PWD/$DIR/config/zookeeper.properties"
 ExecStop=$PWD/$DIR/bin/zookeeper-server-stop.sh
 
@@ -113,7 +116,7 @@ Restart=on-abnormal
 WantedBy=multi-user.target
 EOF
 
-echo "INFO Create kafka.service file"
+echo "INFO: Create kafka.service file"
 
 #######################################################################
 ###################### distribution of rights #########################
@@ -123,7 +126,7 @@ chmod -R  755 /tmp/zookeeper
 chown -R $USER:$USER /tmp/zookeeper
 chown -R $USER:$USER $DIR
 
-systemctl enable zookeeper
 systemctl daemon-reload
-systemctl start kafka
+systemctl enable zookeeper
+systemctl enable kafka
 

@@ -1,9 +1,0 @@
-
-broker:
-        TopicName: testing
-        HostName: localhost
-        Port: 9092
-
-redis:
-        HostName: localhost
-        Port: 6379        
